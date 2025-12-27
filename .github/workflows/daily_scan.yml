@@ -1,0 +1,29 @@
+name: Daily Stock Scanner
+
+on:
+  schedule:
+    # Yeh UTC time hai. 12:00 UTC = 9:30 PM IST (Market close hone ke baad)
+    - cron: '0 12 * * 1-5' 
+  workflow_dispatch: # Button manual run ke liye
+
+jobs:
+  run-scanner:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Python Setup
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9'
+
+      - name: Install Libraries
+        run: pip install -r requirements.txt
+
+      - name: Run Script
+        env:
+          EMAIL_USER: ${{ secrets.EMAIL_USER }}
+          EMAIL_PASS: ${{ secrets.EMAIL_PASS }}
+        run: python main.py
